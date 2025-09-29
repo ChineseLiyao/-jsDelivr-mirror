@@ -1,5 +1,7 @@
 # 🚀 CDN Proxy Server
 
+[中文版本][https://github.com/ChineseLiyao/-jsDelivr-mirror/blob/main/README_CN.md]
+
 A high-performance CDN proxy server built with Node.js that provides seamless access to jsDelivr and Google Fonts with intelligent caching, CORS support, and automatic URL rewriting.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -238,5 +240,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <p align="center">Made with ❤️ by <a href="https://github.com/liyao">liyao</a></p>
 
 ---
+
 
 <p align="center">Made with ❤️ by <a href="https://github.com/yourusername">Liyao</a></p>
