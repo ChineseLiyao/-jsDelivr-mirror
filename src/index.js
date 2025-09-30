@@ -203,10 +203,6 @@ app.get('/', (req, res) => {
                 <code>/package/axios@1.6.0/dist/axios.min.js</code>
             </div>
         </div>
-        
-        <footer>
-            <p>CDN 代理服务器 &copy; 2023</p>
-        </footer>
     </div>
 </body>
 </html>
@@ -444,6 +440,7 @@ app.listen(port, () => {
 
 
 module.exports = app;
+
 
 
 
