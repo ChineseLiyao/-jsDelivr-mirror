@@ -5,62 +5,211 @@ const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send(`
-    <!DOCTYPE html>
-    <html lang="zh-CN">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CDN 代理服务器</title>
-    </head>
-    <body>
-        <div class="container">
-            <h1>CDN 代理服务器
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN 代理服务器</title>
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --background-color: #ffffff;
+            --border-color: #e0e0e0;
+            --code-bg: #f5f5f5;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            padding: 0 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            font-weight: 400;
+        }
+        
+        .endpoint {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .endpoint:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3::before {
+            content: "•";
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        code {
+            background-color: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        .example {
+            background-color: var(--code-bg);
+            border-left: 3px solid var(--primary-color);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .example code {
+            background-color: rgba(0, 0, 0, 0.05);
+            display: block;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .endpoint {
+                padding: 20px;
+            }
+            
+            .container {
+                padding: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CDN 代理服务器</h1>
             <p class="subtitle">为流行的 CDN 服务提供高性能代理</p>
-            
-            <div class="endpoint">
-                <h3>jsDelivr 代理</h3>
-                <p><strong>接口地址：</strong> <code>/jsdelivr/*</code></p>
-                <p>代理访问所有 jsDelivr CDN 资源，支持 npm、GitHub 等所有类型的包。</p>
-                <div class="example">
-                    <strong>示例：</strong><br>
-                    原始链接：<code>https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js</code><br>
-                    代理链接：<code>/jsdelivr/npm/vue@3.3.4/dist/vue.global.js</code>
-                </div>
-            </div>
-            
-            <div class="endpoint">
-                <h3>Google Fonts CSS</h3>
-                <p><strong>接口地址：</strong> <code>/fonts/css</code> 或 <code>/fonts/css2</code></p>
-                <p>代理 Google Fonts CSS API，自动重写字体文件链接为本地代理。</p>
-                <div class="example">
-                    <strong>示例：</strong><br>
-                    原始链接：<code>https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap</code><br>
-                    代理链接：<code>/fonts/css2?family=Roboto:wght@300;400;500;700&display=swap</code>
-                </div>
-            </div>
-            
-            <div class="endpoint">
-                <h3>Google Fonts 字体文件</h3>
-                <p><strong>接口地址：</strong> <code>/fonts/s/*</code></p>
-                <p>自动代理字体文件，支持 WOFF2、WOFF、TTF、EOT 等格式。</p>
-                <div class="example">
-                    <strong>说明：</strong> 使用 CSS 接口时会自动代理字体文件，无需手动配置
-                </div>
-            </div>
-            
-            <div class="endpoint">
-                <h3>NPM 包快捷访问</h3>
-                <p><strong>接口地址：</strong> <code>/package/:package@:version/:file</code></p>
-                <p>快速访问指定 npm 包的文件，无需完整的 jsDelivr 路径。</p>
-                <div class="example">
-                    <strong>示例：</strong><br>
-                    <code>/package/lodash@4.17.21/lodash.min.js</code><br>
-                    <code>/package/axios@1.6.0/dist/axios.min.js</code>
-                </div>
+        </header>
+        
+        <div class="endpoint">
+            <h3>jsDelivr 代理</h3>
+            <p><strong>接口地址：</strong> <code>/jsdelivr/*</code></p>
+            <p>代理访问所有 jsDelivr CDN 资源，支持 npm、GitHub 等所有类型的包。</p>
+            <div class="example">
+                <strong>示例：</strong>
+                <p>原始链接：</p>
+                <code>https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.js</code>
+                <p>代理链接：</p>
+                <code>/jsdelivr/npm/vue@3.3.4/dist/vue.global.js</code>
             </div>
         </div>
-    </body>
-    </html>
+        
+        <div class="endpoint">
+            <h3>Google Fonts CSS</h3>
+            <p><strong>接口地址：</strong> <code>/fonts/css</code> 或 <code>/fonts/css2</code></p>
+            <p>代理 Google Fonts CSS API，自动重写字体文件链接为本地代理。</p>
+            <div class="example">
+                <strong>示例：</strong>
+                <p>原始链接：</p>
+                <code>https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap</code>
+                <p>代理链接：</p>
+                <code>/fonts/css2?family=Roboto:wght@300;400;500;700&display=swap</code>
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Google Fonts 字体文件</h3>
+            <p><strong>接口地址：</strong> <code>/fonts/s/*</code></p>
+            <p>自动代理字体文件，支持 WOFF2、WOFF、TTF、EOT 等格式。</p>
+            <div class="example">
+                <strong>说明：</strong> 使用 CSS 接口时会自动代理字体文件，无需手动配置
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <h3>NPM 包快捷访问</h3>
+            <p><strong>接口地址：</strong> <code>/package/:package@:version/:file</code></p>
+            <p>快速访问指定 npm 包的文件，无需完整的 jsDelivr 路径。</p>
+            <div class="example">
+                <strong>示例：</strong>
+                <code>/package/lodash@4.17.21/lodash.min.js</code>
+                <code>/package/axios@1.6.0/dist/axios.min.js</code>
+            </div>
+        </div>
+        
+        <footer>
+            <p>CDN 代理服务器 &copy; 2023</p>
+        </footer>
+    </div>
+</body>
+</html>
   `);
 });
 
@@ -295,5 +444,6 @@ app.listen(port, () => {
 
 
 module.exports = app;
+
 
 
