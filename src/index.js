@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
     </head>
     <body>
         <div class="container">
-            <h1>CDN 代理服务器 <span class="status">运行中</span></h1>
+            <h1>CDN 代理服务器
             <p class="subtitle">为流行的 CDN 服务提供高性能代理</p>
             
             <div class="endpoint">
@@ -295,4 +295,5 @@ app.listen(port, () => {
 
 
 module.exports = app;
+
 
