@@ -219,7 +219,7 @@ app.get('/', (req, res) => {
   data-close-height="48" 
   data-open-width="380" 
   data-open-height="680" 
-  data-welcome="Your custom welcome text" 
+  data-welcome="交流讨论之地" 
   src="https://chat.liyaocn.top/widget.js" 
   async 
 ></script>
@@ -578,6 +578,7 @@ app.listen(port, () => {
 });
 
 module.exports = app;
+
 
 
 
