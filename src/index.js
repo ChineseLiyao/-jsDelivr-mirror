@@ -219,44 +219,76 @@ app.get('/jsdelivr/*', async (req, res) => {
     const filePath = req.params[0]; // 获取路径参数
     const jsdelivrUrl = `https://cdn.jsdelivr.net/${filePath}`;
 
-    console.log('正在获取:', jsdelivrUrl);
+    console.log('流式获取:', jsdelivrUrl);
 
-    // 发起请求到 jsDelivr
-    const response = await axios.get(jsdelivrUrl, {
-      timeout: 10000, // 10秒超时
+    // 发起流式请求到 jsDelivr
+    const response = await axios({
+      method: 'GET',
+      url: jsdelivrUrl,
+      responseType: 'stream', // 启用流式响应
+      timeout: 30000, // 增加超时时间到30秒
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept-Encoding': 'gzip, deflate, br'
       }
     });
 
     // 设置响应头
     res.set({
       'Content-Type': response.headers['content-type'] || 'text/plain',
-      'Cache-Control': 'public, max-age=3600' // 缓存1小时
+      'Content-Length': response.headers['content-length'],
+      'Cache-Control': 'public, max-age=3600', // 缓存1小时
+      'Access-Control-Allow-Origin': '*',
+      'X-Proxy-By': 'CDN-Proxy-Server'
     });
 
-    // 返回内容
-    res.send(response.data);
+    // 如果有内容编码，也要传递
+    if (response.headers['content-encoding']) {
+      res.set('Content-Encoding', response.headers['content-encoding']);
+    }
+
+    // 设置状态码
+    res.status(response.status);
+
+    // 流式传输数据
+    response.data.pipe(res);
+
+    // 监听流事件
+    response.data.on('error', (error) => {
+      console.error('流传输错误:', error.message);
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: '流传输失败',
+          message: error.message
+        });
+      }
+    });
+
+    response.data.on('end', () => {
+      console.log('流传输完成:', jsdelivrUrl);
+    });
 
   } catch (error) {
     console.error('获取内容失败:', error.message);
 
     if (error.response) {
       // jsDelivr 返回错误状态码
-      res.status(error.response.status).send({
+      res.status(error.response.status).json({
         error: '获取内容失败',
         status: error.response.status,
-        message: error.response.statusText
+        message: error.response.statusText,
+        url: error.config?.url
       });
     } else if (error.request) {
       // 请求未发出
-      res.status(500).send({
+      res.status(500).json({
         error: '网络请求失败',
-        message: '无法连接到 jsDelivr'
+        message: '无法连接到 jsDelivr',
+        timeout: error.code === 'ECONNABORTED'
       });
     } else {
       // 其他错误
-      res.status(500).send({
+      res.status(500).json({
         error: '服务器错误',
         message: error.message
       });
@@ -360,19 +392,23 @@ app.get('/fonts/css2', async (req, res) => {
   }
 });
 
-// Google Fonts 字体文件代理
+// Google Fonts 字体文件代理（流式输出）
 app.get('/fonts/s/*', async (req, res) => {
   try {
     const filePath = req.params[0];
     const fontUrl = `https://fonts.gstatic.com/s/${filePath}`;
 
-    console.log('正在获取字体文件:', fontUrl);
+    console.log('🔤 流式获取字体文件:', fontUrl);
 
-    const response = await axios.get(fontUrl, {
-      timeout: 15000, // 字体文件可能较大，增加超时时间
-      responseType: 'arraybuffer', // 处理二进制数据
+    // 发起流式请求
+    const response = await axios({
+      method: 'GET',
+      url: fontUrl,
+      responseType: 'stream', // 流式响应
+      timeout: 30000, // 30秒超时
       headers: {
-        'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept-Encoding': 'gzip, deflate, br'
       }
     });
 
@@ -386,64 +422,148 @@ app.get('/fonts/s/*', async (req, res) => {
       contentType = 'font/ttf';
     } else if (filePath.endsWith('.eot')) {
       contentType = 'application/vnd.ms-fontobject';
+    } else if (filePath.endsWith('.otf')) {
+      contentType = 'font/otf';
     }
 
+    // 设置响应头
     res.set({
       'Content-Type': contentType,
-      'Cache-Control': 'public, max-age=31536000', // 字体文件缓存1年
-      'Access-Control-Allow-Origin': '*'
+      'Content-Length': response.headers['content-length'],
+      'Cache-Control': 'public, max-age=31536000, immutable', // 字体文件缓存1年，不可变
+      'Access-Control-Allow-Origin': '*',
+      'X-Proxy-By': 'CDN-Proxy-Server'
     });
 
-    res.send(response.data);
+    // 如果有内容编码，也要传递
+    if (response.headers['content-encoding']) {
+      res.set('Content-Encoding', response.headers['content-encoding']);
+    }
+
+    // 设置状态码
+    res.status(response.status);
+
+    // 流式传输字体文件
+    response.data.pipe(res);
+
+    // 监听流事件
+    response.data.on('error', (error) => {
+      console.error('字体文件流传输错误:', error.message);
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: '字体文件流传输失败',
+          message: error.message
+        });
+      }
+    });
+
+    response.data.on('end', () => {
+      console.log('字体文件流传输完成:', fontUrl);
+    });
 
   } catch (error) {
     console.error('获取字体文件失败:', error.message);
 
     if (error.response) {
-      res.status(error.response.status).send({
+      res.status(error.response.status).json({
         error: '获取字体文件失败',
         status: error.response.status,
-        message: error.response.statusText
+        message: error.response.statusText,
+        url: error.config?.url
       });
     } else {
-      res.status(500).send({
+      res.status(500).json({
         error: '获取字体文件失败',
-        message: error.message
+        message: error.message,
+        timeout: error.code === 'ECONNABORTED'
       });
     }
   }
 });
 
-// 示例：获取特定包的文件
+// NPM 包快捷访问
 app.get('/package/:package@:version/:file', async (req, res) => {
   try {
     const { package, version, file } = req.params;
     const jsdelivrUrl = `https://cdn.jsdelivr.net/npm/${package}@${version}/${file}`;
 
-    const response = await axios.get(jsdelivrUrl);
+    console.log(`流式获取包文件: ${package}@${version}/${file}`);
 
-    res.set({
-      'Content-Type': response.headers['content-type'] || 'text/plain'
+    // 发起流式请求
+    const response = await axios({
+      method: 'GET',
+      url: jsdelivrUrl,
+      responseType: 'stream',
+      timeout: 30000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept-Encoding': 'gzip, deflate, br'
+      }
     });
 
-    res.send(response.data);
+    // 设置响应头
+    res.set({
+      'Content-Type': response.headers['content-type'] || 'text/plain',
+      'Content-Length': response.headers['content-length'],
+      'Cache-Control': 'public, max-age=3600',
+      'Access-Control-Allow-Origin': '*',
+      'X-Proxy-By': 'CDN-Proxy-Server'
+    });
+
+    // 如果有内容编码，也要传递
+    if (response.headers['content-encoding']) {
+      res.set('Content-Encoding', response.headers['content-encoding']);
+    }
+
+    // 设置状态码
+    res.status(response.status);
+
+    // 流式传输
+    response.data.pipe(res);
+
+    // 监听流事件
+    response.data.on('error', (error) => {
+      console.error('包文件流传输错误:', error.message);
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: '包文件流传输失败',
+          message: error.message
+        });
+      }
+    });
+
+    response.data.on('end', () => {
+      console.log(`包文件流传输完成: ${package}@${version}/${file}`);
+    });
 
   } catch (error) {
-    res.status(500).send({
-      error: '获取包内容失败',
-      message: error.message
-    });
+    console.error('获取包内容失败:', error.message);
+    
+    if (error.response) {
+      res.status(error.response.status).json({
+        error: '获取包内容失败',
+        status: error.response.status,
+        message: error.response.statusText,
+        package: req.params.package,
+        version: req.params.version,
+        file: req.params.file
+      });
+    } else {
+      res.status(500).json({
+        error: '获取包内容失败',
+        message: error.message,
+        timeout: error.code === 'ECONNABORTED'
+      });
+    }
   }
 });
 
 app.listen(port, () => {
-  console.log(`🚀 CDN Proxy Server is running on http://localhost:${port}`);
-  console.log(`📦 jsDelivr proxy: http://localhost:${port}/jsdelivr/*`);
-  console.log(`🔤 Google Fonts proxy: http://localhost:${port}/fonts/css*`);
+  console.log(`服务运行`);
 });
 
-
 module.exports = app;
+
 
 
 
