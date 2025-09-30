@@ -154,8 +154,8 @@ app.get('/', (req, res) => {
 <body>
     <div class="container">
         <header>
-            <h1>CDN 代理服务器</h1>
-            <p class="subtitle">为流行的 CDN 服务提供高性能代理</p>
+            <h1>jsdelivr/npm/google fonts 代理服务</h1>
+            <p class="subtitle">为jsdelivr/npm/google fonts提供代理</p>
         </header>
         
         <div class="endpoint">
@@ -202,6 +202,10 @@ app.get('/', (req, res) => {
                 <code>/package/lodash@4.17.21/lodash.min.js</code>
                 <code>/package/axios@1.6.0/dist/axios.min.js</code>
             </div>
+        </div>
+
+        <div>
+            <h5>Made by liyao</h5>
         </div>
     </div>
 </body>
@@ -440,6 +444,7 @@ app.listen(port, () => {
 
 
 module.exports = app;
+
 
 
 
