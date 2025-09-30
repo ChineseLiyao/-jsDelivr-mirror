@@ -11,90 +11,14 @@ app.get('/', (req, res) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>CDN 代理服务器</title>
-        <style>
-            body { 
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; 
-                margin: 40px; 
-                line-height: 1.6; 
-                background: #f8f9fa;
-            }
-            .container {
-                max-width: 1000px;
-                margin: 0 auto;
-                background: white;
-                padding: 40px;
-                border-radius: 12px;
-                box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            }
-            h1 { 
-                color: #333; 
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            .subtitle {
-                text-align: center;
-                color: #666;
-                margin-bottom: 40px;
-                font-size: 1.1em;
-            }
-            .endpoint { 
-                background: #f8f9fa; 
-                padding: 20px; 
-                margin: 20px 0; 
-                border-radius: 8px; 
-                border-left: 4px solid #007bff;
-                transition: transform 0.2s ease;
-            }
-            .endpoint:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 15px rgba(0,123,255,0.1);
-            }
-            .endpoint h3 {
-                margin-top: 0;
-                color: #007bff;
-            }
-            code { 
-                background: #e9ecef; 
-                padding: 4px 8px; 
-                border-radius: 4px; 
-                font-family: 'Monaco', 'Consolas', 'Source Code Pro', monospace;
-                font-size: 0.9em;
-            }
-            .example { 
-                color: #6c757d; 
-                font-size: 0.9em; 
-                margin-top: 8px;
-                padding: 8px;
-                background: #fff;
-                border-radius: 4px;
-                border: 1px solid #e9ecef;
-            }
-            .features {
-                text-align: center;
-                margin-top: 40px;
-                padding: 20px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border-radius: 8px;
-            }
-            .status {
-                display: inline-block;
-                background: #28a745;
-                color: white;
-                padding: 4px 12px;
-                border-radius: 20px;
-                font-size: 0.8em;
-                margin-left: 10px;
-            }
-        </style>
     </head>
     <body>
         <div class="container">
-            <h1>🚀 CDN 代理服务器 <span class="status">运行中</span></h1>
+            <h1>CDN 代理服务器 <span class="status">运行中</span></h1>
             <p class="subtitle">为流行的 CDN 服务提供高性能代理</p>
             
             <div class="endpoint">
-                <h3>📦 jsDelivr 代理</h3>
+                <h3>jsDelivr 代理</h3>
                 <p><strong>接口地址：</strong> <code>/jsdelivr/*</code></p>
                 <p>代理访问所有 jsDelivr CDN 资源，支持 npm、GitHub 等所有类型的包。</p>
                 <div class="example">
@@ -105,7 +29,7 @@ app.get('/', (req, res) => {
             </div>
             
             <div class="endpoint">
-                <h3>🔤 Google Fonts CSS</h3>
+                <h3>Google Fonts CSS</h3>
                 <p><strong>接口地址：</strong> <code>/fonts/css</code> 或 <code>/fonts/css2</code></p>
                 <p>代理 Google Fonts CSS API，自动重写字体文件链接为本地代理。</p>
                 <div class="example">
@@ -116,7 +40,7 @@ app.get('/', (req, res) => {
             </div>
             
             <div class="endpoint">
-                <h3>📁 Google Fonts 字体文件</h3>
+                <h3>Google Fonts 字体文件</h3>
                 <p><strong>接口地址：</strong> <code>/fonts/s/*</code></p>
                 <p>自动代理字体文件，支持 WOFF2、WOFF、TTF、EOT 等格式。</p>
                 <div class="example">
@@ -125,7 +49,7 @@ app.get('/', (req, res) => {
             </div>
             
             <div class="endpoint">
-                <h3>📋 NPM 包快捷访问</h3>
+                <h3>NPM 包快捷访问</h3>
                 <p><strong>接口地址：</strong> <code>/package/:package@:version/:file</code></p>
                 <p>快速访问指定 npm 包的文件，无需完整的 jsDelivr 路径。</p>
                 <div class="example">
@@ -133,11 +57,6 @@ app.get('/', (req, res) => {
                     <code>/package/lodash@4.17.21/lodash.min.js</code><br>
                     <code>/package/axios@1.6.0/dist/axios.min.js</code>
                 </div>
-            </div>
-            
-            <div class="features">
-                <h3>✨ 功能特性</h3>
-                <p>🌐 CORS 跨域支持 | ⚡ 智能缓存策略 | 🛡️ 完善错误处理 | 🚀 生产环境就绪</p>
             </div>
         </div>
     </body>
@@ -376,3 +295,4 @@ app.listen(port, () => {
 
 
 module.exports = app;
+
