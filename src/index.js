@@ -3,9 +3,6 @@ const axios = require('axios');
 const app = express();
 const port = process.env.PORT || 3000;
 
-/**
- * 终端彩色日志辅助函数
- */
 const logger = {
     info: (type, msg) => console.log(`\x1b[36m[${type}]\x1b[0m ${msg}`),
     success: (type, msg) => console.log(`\x1b[32m[${type}]\x1b[0m ${msg}`),
@@ -147,7 +144,6 @@ app.get('/', (req, res) => {
             Designed by <strong>Liyao</strong> &bull; <a href="https://liyao.edu.kg" target="_blank">View Blog</a>
         </footer>
     </div>
-    <script data-host-id="1" data-auto-reg="true" src="https://chat.liyaocn.top/widget.js" async></script>
 </body>
 </html>
     `);
@@ -232,3 +228,4 @@ app.listen(port, () => {
 });
 
 module.exports = app;
+
